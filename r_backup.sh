@@ -1,18 +1,11 @@
 #!/bin/sh
 
-# ===========================================
-#	-> 1.Backup_full 
-#		-> mysqldump tunel
-#	-> 2.Backups_incrementals
-#		-> mysqldump tunel
-# ===========================================
-
-
 # -------------------------------------------
 #	CHECK PATH TO CONFIG FILE AND LOAD
 # -------------------------------------------
 if [ -z "$1" ];then
-	echo "You muse add a path to config file \n example : r_backup.sh 'custom.cnf'"
+	echo "You muse add a path to config file \n \
+		  example : r_backup.sh 'custom.cnf'"
 	exit 1;
 else
 	. $1
@@ -27,7 +20,6 @@ mkdir_if_noExist(){
 		mkdir $1
 	fi
 }
-
 
 # -------------------------------------------
 #	BUILD INTERNAL VARIABLES FROM file.ini
@@ -46,6 +38,7 @@ mysqldump(){
 	"mysqldump ${groupMysql} \
 	--compress ${dbName}"| xz > ${dirToSave}${month_year_now}/${date_now}/backup.sql.7z
 }
+
 # -------------------------------------------
 #	FIRST FULL BACKUP
 # -------------------------------------------
@@ -61,7 +54,6 @@ backup_full(){
 	${dirToSave}${month_year_now}/${date_now} \
 	--log-file=${dirToSave}${month_year_now}/${date_now}/backup.log
 }
-
 
 # -------------------------------------------
 #	INCREMENTALES BACKUPS
