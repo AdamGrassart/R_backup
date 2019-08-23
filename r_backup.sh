@@ -11,7 +11,6 @@ else
 	. $1
 fi
 
-
 # -------------------------------------------
 #	FUNC TOOLS
 # -------------------------------------------
@@ -40,46 +39,32 @@ mysqldump(){
 }
 
 # -------------------------------------------
-#	FIRST FULL BACKUP
+#	RSYNC
 # -------------------------------------------
-backup_full(){
-
+com_rsync(){
+	link=""
+	
 	# CREATE MONTH FOLDER 
 	mkdir_if_noExist ${dirToSave}${month_year_now}/${date_now}
 
-	# FULL BACKUP RSYNC
-	rsync ${options} \
-	"${sshOptions}" \
-	${saveFromSource} \
+	if [ "$1" = "incremental" ];then
+		date_prev=`date -d "-1 day" +%d-%m-%Y`
+		link="--link-dest=${dirToSave}${month_year_now}/${date_prev}"
+	fi
+
+	rsync ${options} "${sshOptions}" ${saveFromSource} \
 	${dirToSave}${month_year_now}/${date_now} \
-	--log-file=${dirToSave}${month_year_now}/${date_now}/backup.log
-}
-
-# -------------------------------------------
-#	INCREMENTALES BACKUPS
-# -------------------------------------------
-backup_incremental(){
-	date_prev=`date -d "-1 day" +%d-%m-%Y`
-
-	# avoid bug with --log-file
-	mkdir_if_noExist ${dirToSave}${month_year_now}/${date_now}
-
-	# RSYNC 
-	rsync ${options} \
-	"${sshOptions}" \
-	--link-dest=${dirToSave}${month_year_now}/${date_prev} \
-	${saveFromSource} \
-	${dirToSave}${month_year_now}/${date_now} \
-	--log-file=${dirToSave}${month_year_now}/${date_now}/backup.log
+	${rl} --log-file=${dirToSave}${month_year_now}/${date_now}/backup.log \
+	${flags} ${link}
 }
 
 # -------------------------------------------
 #  STRUCTURE PROGRAM
 # -------------------------------------------
 if [ $(( $day_now )) = $(( $firstDayMonth )) ];then
-	backup_full
+	com_rsync "full"
 	mysqldump
 else
-	backup_incremental
+	com_rsync "incremental"
 	mysqldump
 fi
