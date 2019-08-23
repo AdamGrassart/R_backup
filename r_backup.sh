@@ -7,10 +7,17 @@
 #		-> mysqldump tunel
 # ===========================================
 
-if [ !$1 ];then
+
+# -------------------------------------------
+#	CHECK PATH TO CONFIG FILE AND LOAD
+# -------------------------------------------
+if [ -z "$1" ];then
 	echo "You muse add a path to config file \n example : r_backup.sh 'custom.cnf'"
+	exit 1;
+else
+	. $1
 fi
-exit 0;
+
 
 # -------------------------------------------
 #	FUNC TOOLS
@@ -29,29 +36,32 @@ date_now=`date +%d-%m-%Y`
 day_now=`date +%d`
 month_year_now=`date +%m-%Y`
 
-
 # -------------------------------------------
-#	FIRST FULL BACKUP
+#	DUMP DATA 
 # -------------------------------------------
-backup_full(){
-
-	# CREATE MONTH FOLDER 
-	mkdir_if_noExist ${dirToSave}${month_year_now}	
-
-	# FULL BACKUP RSYNC
-	rsync ${options} \
-	--timeout=90 \
-	"${sshOptions}" \
-	${saveFromSource} \
-	${dirToSave}${month_year_now}/${date_now} \
-	--log-file=${dirToSave}${month_year_now}/${date_now}/backup.log
-
+mysqldump(){
 	# DATABASE 
 	ssh ${sshLoginHost} \
 	-p ${sshPort} \
 	"mysqldump ${groupMysql} \
 	--compress ${dbName}"| xz > ${dirToSave}${month_year_now}/${date_now}/backup.sql.7z
 }
+# -------------------------------------------
+#	FIRST FULL BACKUP
+# -------------------------------------------
+backup_full(){
+
+	# CREATE MONTH FOLDER 
+	mkdir_if_noExist ${dirToSave}${month_year_now}/${date_now}
+
+	# FULL BACKUP RSYNC
+	rsync ${options} \
+	"${sshOptions}" \
+	${saveFromSource} \
+	${dirToSave}${month_year_now}/${date_now} \
+	--log-file=${dirToSave}${month_year_now}/${date_now}/backup.log
+}
+
 
 # -------------------------------------------
 #	INCREMENTALES BACKUPS
@@ -64,22 +74,20 @@ backup_incremental(){
 
 	# RSYNC 
 	rsync ${options} \
-	--timeout=90 \
 	"${sshOptions}" \
 	--link-dest=${dirToSave}${month_year_now}/${date_prev} \
 	${saveFromSource} \
 	${dirToSave}${month_year_now}/${date_now} \
 	--log-file=${dirToSave}${month_year_now}/${date_now}/backup.log
-
-	# DATABASE 
-	ssh ${sshLoginHost} \
-	-p ${sshPort} \
-	"mysqldump ${groupMysql} \
-	--compress ${dbName}"| xz > ${dirToSave}${month_year_now}/${date_now}/backup.sql.7z
 }
 
+# -------------------------------------------
+#  STRUCTURE PROGRAM
+# -------------------------------------------
 if [ $(( $day_now )) = $(( $firstDayMonth )) ];then
 	backup_full
+	mysqldump
 else
 	backup_incremental
+	mysqldump
 fi
