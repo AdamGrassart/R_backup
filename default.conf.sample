@@ -1,0 +1,77 @@
+#!/bin/sh
+
+# -------------------------------------------
+# OPTIONS FOR RSYNC COMMAND
+# [!] n option is DRY-RUN MODE (simulation) 
+# [!] remove 'n' option after testing your configuration
+# -------------------------------------------
+options="-nrtlzivs --progress"
+
+
+# -------------------------------------------
+# [!]Set the current day of your first backup
+# [!]to begin with a full backup to compare 
+#
+# Each time script run this day
+# : Make new folder [month] and 
+# : a sub-folder [day] 
+# : with full backup
+# Other day 
+# : incremental backup (hard-link)
+# -------------------------------------------
+firstDayMonth="1"
+
+
+# -------------------------------------------
+# SSH OPTIONS FOR RSYNC
+# [!] write nothing if you don't use ssh  
+# [!] method by auth key is used for security
+# [!] ssh ex => "-e ssh -p 22"
+# -------------------------------------------
+sshOptions=""
+
+
+# -------------------------------------------
+# SOURCE TO SAVE FOR RSYNC
+# [!] local: "/path/to/folder/"
+# [!] ssh:   "login@host:/path/to/folder/"  
+# -------------------------------------------
+saveFromSource=""
+
+
+# -------------------------------------------
+# DIR TO SAVE FOR RSYNC
+# [!] local: "/path/to/folder/"
+# [!] remote: no support
+# -------------------------------------------
+dirToSave=""
+
+
+# -------------------------------------------
+# SSH INFOS FOR MYSQLDUMP
+# [!] ex : "login@host"
+# -------------------------------------------
+sshLoginHost=""
+
+# -------------------------------------------
+# SSH PORT FOR MYSQLDUMP
+# -------------------------------------------
+sshPort=22
+
+# -------------------------------------------
+# GROUP CLIENT FOR MYSQLDUMP
+# [!] security for hidden host/pass/user exec
+# see mysql documentation
+# ex file config on remote server (~.my.cnf) : 
+# [clienthost1]
+# user:hidden
+# password:hidden
+# host:hidden
+# ex : "--defaults-group-suffix=host1"
+# -------------------------------------------
+groupMysql=""
+
+# -------------------------------------------
+# SSH PORT FOR MYSQLDUMP
+# -------------------------------------------
+dbName=""
