@@ -4,8 +4,10 @@
 # OPTIONS FOR RSYNC COMMAND
 # [!] n option is DRY-RUN MODE (simulation) 
 # [!] remove 'n' option after testing your configuration
+# [!] remove 'e' option if you don't need ssh
 # -------------------------------------------
-options="-nrtlzivs --progress"
+options="-nrtlzivs -e"
+flags="--progress --timeout=90"
 
 
 # -------------------------------------------
@@ -26,7 +28,7 @@ firstDayMonth="1"
 # SSH OPTIONS FOR RSYNC
 # [!] write nothing if you don't use ssh  
 # [!] method by auth key is used for security
-# [!] ssh ex => "-e ssh -p 22"
+# [!] ssh ex => "ssh -p 22"
 # -------------------------------------------
 sshOptions=""
 
