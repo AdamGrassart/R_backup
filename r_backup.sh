@@ -54,7 +54,7 @@ com_rsync(){
 
 	rsync ${options} "${sshOptions}" ${saveFromSource} \
 	${dirToSave}${month_year_now}/${date_now} \
-	${rl} --log-file=${dirToSave}${month_year_now}/${date_now}/backup.log \
+	--log-file=${dirToSave}${month_year_now}/${date_now}/backup.log \
 	${flags} ${link}
 }
 
