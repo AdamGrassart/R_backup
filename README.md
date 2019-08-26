@@ -6,6 +6,13 @@ Script Shell avec fichiers de configurations indépendants pour :
 * Sauvegarde sql 
 
 ## Comment ça fonctionne ? 
+```
+    debut du mois [n] = 5 (choisir le jour ou vous commencez la sauvegarde)
+    -> creation du dossier du mois
+    -> Backup complet le jour [5] du mois 
+    -> backup incremental jours [6] du mois à [4] du mois+1
+    -> on recommence
+```
 
 Copiez le fichier de configuration **default.conf.sample** documenté pour créer votre propre configuration de sauvegarde locale ou distante. Le script est exécuté de cette manière : 
 ```
