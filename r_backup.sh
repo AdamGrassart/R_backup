@@ -16,7 +16,7 @@ fi
 # -------------------------------------------
 mkdir_if_noExist(){
 	if [ ! -d "$1" ];then
-		mkdir $1
+		mkdir --parents $1
 	fi
 }
 
