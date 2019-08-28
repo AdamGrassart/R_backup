@@ -5,7 +5,7 @@
 # -------------------------------------------
 if [ -z "$1" ];then
 	echo "You muse add a path to config file \n \
-		  example : r_backup.sh 'custom.cnf'"
+		  example : r_backup.sh /path/to/custom.conf "
 	exit 1;
 else
 	. $1
